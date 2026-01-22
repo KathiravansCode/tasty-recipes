@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { Search, ChefHat } from 'lucide-react';
-import { api } from '../services/api';
-import RecipeCard from '../components/recipe/RecipeCard';
-import Pagination from '../components/ui/Pagination';
-import Button from '../components/ui/Button';
+import { api } from '../../services/api';
+import RecipeCard from '../../components/recipe/RecipeCard';
+import Pagination from '../../components/ui/Pagination';
+import Button from '../../components/ui/Button';
 
 const RecipesPage = ({ onNavigate, searchQuery }) => {
   const [recipes, setRecipes] = useState([]);

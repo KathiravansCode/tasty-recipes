@@ -1,108 +1,278 @@
 const API_BASE_URL = 'http://localhost:8080/api';
 
+// Helper function for error handling
+const handleResponse = async (response) => {
+  if (!response.ok) {
+    const error = await response.json().catch(() => ({ message: 'Network error occurred' }));
+    throw new Error(error.message || `HTTP error! status: ${response.status}`);
+  }
+  return response.json();
+};
+
+// Helper function to create headers with auth
+const createHeaders = (token, contentType = 'application/json') => {
+  const headers = {};
+  
+  if (contentType) {
+    headers['Content-Type'] = contentType;
+  }
+  
+  if (token) {
+    headers['Authorization'] = `Bearer ${token}`;
+  }
+  
+  return headers;
+};
+
 export const api = {
   // Auth endpoints
-  register: (data) => fetch(`${API_BASE_URL}/auth/register`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(data)
-  }),
+  register: async (data) => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/auth/register`, {
+        method: 'POST',
+        headers: createHeaders(null),
+        body: JSON.stringify(data)
+      });
+      return handleResponse(response);
+    } catch (error) {
+      console.error('Registration error:', error);
+      throw error;
+    }
+  },
   
-  login: (data) => fetch(`${API_BASE_URL}/auth/login`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(data)
-  }),
+  login: async (data) => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/auth/login`, {
+        method: 'POST',
+        headers: createHeaders(null),
+        body: JSON.stringify(data)
+      });
+      return handleResponse(response);
+    } catch (error) {
+      console.error('Login error:', error);
+      throw error;
+    }
+  },
   
-  deleteAccount: (token) => fetch(`${API_BASE_URL}/auth/delete-account`, {
-    method: 'DELETE',
-    headers: { 'Authorization': `Bearer ${token}` }
-  }),
+  deleteAccount: async (token) => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/auth/delete-account`, {
+        method: 'DELETE',
+        headers: createHeaders(token)
+      });
+      return handleResponse(response);
+    } catch (error) {
+      console.error('Delete account error:', error);
+      throw error;
+    }
+  },
 
   // Recipe endpoints
-  getRecipes: (page = 0, size = 12, sortBy = 'createdAt', direction = 'desc') => 
-    fetch(`${API_BASE_URL}/recipes?page=${page}&size=${size}&sortBy=${sortBy}&direction=${direction}`),
+  getRecipes: async (page = 0, size = 12, sortBy = 'createdAt', direction = 'desc') => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/recipes?page=${page}&size=${size}&sortBy=${sortBy}&direction=${direction}`);
+      return handleResponse(response);
+    } catch (error) {
+      console.error('Get recipes error:', error);
+      throw error;
+    }
+  },
   
-  searchRecipes: (keyword, page = 0, size = 12) => 
-    fetch(`${API_BASE_URL}/recipes/search?keyword=${keyword}&page=${page}&size=${size}`),
+  searchRecipes: async (keyword, page = 0, size = 12) => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/recipes/search?keyword=${encodeURIComponent(keyword)}&page=${page}&size=${size}`);
+      return handleResponse(response);
+    } catch (error) {
+      console.error('Search recipes error:', error);
+      throw error;
+    }
+  },
   
-  getRecipeById: (id) => fetch(`${API_BASE_URL}/recipes/${id}`),
+  getRecipeById: async (id) => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/recipes/${id}`);
+      return handleResponse(response);
+    } catch (error) {
+      console.error('Get recipe by ID error:', error);
+      throw error;
+    }
+  },
   
-  createRecipe: (formData, token) => fetch(`${API_BASE_URL}/recipes`, {
-    method: 'POST',
-    headers: { 'Authorization': `Bearer ${token}` },
-    body: formData
-  }),
+  createRecipe: async (formData, token) => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/recipes`, {
+        method: 'POST',
+        headers: { 'Authorization': `Bearer ${token}` },
+        body: formData // Don't set Content-Type for FormData
+      });
+      return handleResponse(response);
+    } catch (error) {
+      console.error('Create recipe error:', error);
+      throw error;
+    }
+  },
   
-  updateRecipe: (id, formData, token) => fetch(`${API_BASE_URL}/recipes/${id}`, {
-    method: 'PUT',
-    headers: { 'Authorization': `Bearer ${token}` },
-    body: formData
-  }),
+  updateRecipe: async (id, formData, token) => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/recipes/${id}`, {
+        method: 'PUT',
+        headers: { 'Authorization': `Bearer ${token}` },
+        body: formData // Don't set Content-Type for FormData
+      });
+      return handleResponse(response);
+    } catch (error) {
+      console.error('Update recipe error:', error);
+      throw error;
+    }
+  },
   
-  deleteRecipe: (id, token) => fetch(`${API_BASE_URL}/recipes/${id}`, {
-    method: 'DELETE',
-    headers: { 'Authorization': `Bearer ${token}` }
-  }),
+  deleteRecipe: async (id, token) => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/recipes/${id}`, {
+        method: 'DELETE',
+        headers: createHeaders(token)
+      });
+      return handleResponse(response);
+    } catch (error) {
+      console.error('Delete recipe error:', error);
+      throw error;
+    }
+  },
 
   // Review endpoints
-  getReviews: (recipeId) => fetch(`${API_BASE_URL}/recipes/${recipeId}/reviews`),
+  getReviews: async (recipeId) => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/recipes/${recipeId}/reviews`);
+      return handleResponse(response);
+    } catch (error) {
+      console.error('Get reviews error:', error);
+      throw error;
+    }
+  },
   
-  createReview: (recipeId, data, token) => fetch(`${API_BASE_URL}/recipes/${recipeId}/reviews`, {
-    method: 'POST',
-    headers: { 
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${token}` 
-    },
-    body: JSON.stringify(data)
-  }),
+  createReview: async (recipeId, data, token) => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/recipes/${recipeId}/reviews`, {
+        method: 'POST',
+        headers: createHeaders(token),
+        body: JSON.stringify(data)
+      });
+      return handleResponse(response);
+    } catch (error) {
+      console.error('Create review error:', error);
+      throw error;
+    }
+  },
   
-  updateReview: (recipeId, reviewId, data, token) => fetch(`${API_BASE_URL}/recipes/${recipeId}/reviews/${reviewId}`, {
-    method: 'PUT',
-    headers: { 
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${token}` 
-    },
-    body: JSON.stringify(data)
-  }),
+  updateReview: async (recipeId, reviewId, data, token) => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/recipes/${recipeId}/reviews/${reviewId}`, {
+        method: 'PUT',
+        headers: createHeaders(token),
+        body: JSON.stringify(data)
+      });
+      return handleResponse(response);
+    } catch (error) {
+      console.error('Update review error:', error);
+      throw error;
+    }
+  },
   
-  deleteReview: (recipeId, reviewId, token) => fetch(`${API_BASE_URL}/recipes/${recipeId}/reviews/${reviewId}`, {
-    method: 'DELETE',
-    headers: { 'Authorization': `Bearer ${token}` }
-  }),
+  deleteReview: async (recipeId, reviewId, token) => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/recipes/${recipeId}/reviews/${reviewId}`, {
+        method: 'DELETE',
+        headers: createHeaders(token)
+      });
+      return handleResponse(response);
+    } catch (error) {
+      console.error('Delete review error:', error);
+      throw error;
+    }
+  },
 
   // User endpoints
-  getProfile: (token) => fetch(`${API_BASE_URL}/users/profile`, {
-    headers: { 'Authorization': `Bearer ${token}` }
-  }),
+  getProfile: async (token) => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/users/profile`, {
+        headers: createHeaders(token)
+      });
+      return handleResponse(response);
+    } catch (error) {
+      console.error('Get profile error:', error);
+      throw error;
+    }
+  },
   
-  getUserById: (userId) => fetch(`${API_BASE_URL}/users/${userId}`),
+  getUserById: async (userId) => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/users/${userId}`);
+      return handleResponse(response);
+    } catch (error) {
+      console.error('Get user by ID error:', error);
+      throw error;
+    }
+  },
   
-  updateProfile: (data, token) => fetch(`${API_BASE_URL}/users/profile`, {
-    method: 'PUT',
-    headers: { 
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${token}` 
-    },
-    body: JSON.stringify(data)
-  }),
+  updateProfile: async (data, token) => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/users/profile`, {
+        method: 'PUT',
+        headers: createHeaders(token),
+        body: JSON.stringify(data)
+      });
+      return handleResponse(response);
+    } catch (error) {
+      console.error('Update profile error:', error);
+      throw error;
+    }
+  },
   
-  changePassword: (data, token) => fetch(`${API_BASE_URL}/users/change-password`, {
-    method: 'PUT',
-    headers: { 
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${token}` 
-    },
-    body: JSON.stringify(data)
-  }),
+  changePassword: async (data, token) => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/users/change-password`, {
+        method: 'PUT',
+        headers: createHeaders(token),
+        body: JSON.stringify(data)
+      });
+      return handleResponse(response);
+    } catch (error) {
+      console.error('Change password error:', error);
+      throw error;
+    }
+  },
   
-  getUserRecipes: (token) => fetch(`${API_BASE_URL}/users/recipes`, {
-    headers: { 'Authorization': `Bearer ${token}` }
-  }),
+  getUserRecipes: async (token) => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/users/recipes`, {
+        headers: createHeaders(token)
+      });
+      return handleResponse(response);
+    } catch (error) {
+      console.error('Get user recipes error:', error);
+      throw error;
+    }
+  },
   
-  getUserRecipesById: (userId) => fetch(`${API_BASE_URL}/users/${userId}/recipes`),
+  getUserRecipesById: async (userId) => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/users/${userId}/recipes`);
+      return handleResponse(response);
+    } catch (error) {
+      console.error('Get user recipes by ID error:', error);
+      throw error;
+    }
+  },
   
-  getUserReviews: (token) => fetch(`${API_BASE_URL}/users/reviews`, {
-    headers: { 'Authorization': `Bearer ${token}` }
-  })
+  getUserReviews: async (token) => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/users/reviews`, {
+        headers: createHeaders(token)
+      });
+      return handleResponse(response);
+    } catch (error) {
+      console.error('Get user reviews error:', error);
+      throw error;
+    }
+  }
 };

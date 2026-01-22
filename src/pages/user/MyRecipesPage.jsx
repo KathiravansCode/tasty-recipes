@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { Plus, Edit, Trash2, Eye, Star, ChefHat } from 'lucide-react';
-import { useAuth } from '../context/AuthContext';
-import { api } from '../services/api';
-import Button from '../components/ui/Button';
-import Modal from '../components/ui/Modal';
-import Toast from '../components/ui/Toast';
+import { useAuth } from '../../context/AuthContext';
+import { api } from '../../services/api';
+import Button from '../../components/ui/Button';
+import Modal from '../../components/ui/Modal';
+import Toast from '../../components/ui/Toast';
 
 const MyRecipesPage = ({ onNavigate }) => {
   const { token } = useAuth();

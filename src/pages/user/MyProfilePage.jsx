@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 import { Trash2 } from 'lucide-react';
-import { useAuth } from '../context/AuthContext';
-import { api } from '../services/api';
-import Button from '../components/ui/Button';
-import Input from '../components/ui/Input';
-import Modal from '../components/ui/Modal';
-import Toast from '../components/ui/Toast';
+import { useAuth } from '../../context/AuthContext';
+import { api } from '../../services/api';
+import Button from '../../components/ui/Button';
+import Input from "../../components/ui/Input"
+import Modal from "../../components/ui/Modal"
+import Toast from "../../components/ui/Toast"
 
 const MyProfilePage = ({ onNavigate }) => {
   const { user, token, logout } = useAuth();

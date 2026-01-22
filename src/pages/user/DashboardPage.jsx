@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { Plus, BookOpen, MessageSquare, User, Settings, Search, ChefHat } from 'lucide-react';
-import { useAuth } from '../context/AuthContext';
-import { api } from '../services/api';
-import RecipeCard from '../components/recipe/RecipeCard';
-import Button from '../components/ui/Button';
+import { useAuth } from '../../context/AuthContext';
+import { api } from '../../services/api';
+import RecipeCard from '../../components/recipe/RecipeCard';
+import Button from '../../components/ui/Button';
 
 const DashboardPage = ({ onNavigate }) => {
   const { user, token } = useAuth();

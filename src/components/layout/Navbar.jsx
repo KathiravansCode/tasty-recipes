@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ChefHat, Menu, X, Plus, LogOut } from 'lucide-react';
+import { ChefHat, Menu, X, Plus, LogOut, User as UserIcon } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import Button from '../ui/Button';
 
@@ -13,59 +13,104 @@ const Navbar = ({ currentPage, onNavigate }) => {
     setMobileMenuOpen(false);
   };
 
+  const NavLink = ({ page, children, mobile = false }) => {
+    const isActive = currentPage === page;
+    const baseClass = mobile 
+      ? 'text-left py-3 px-4 rounded-lg transition-all duration-200'
+      : 'transition-all duration-200 relative';
+    
+    const activeClass = mobile
+      ? 'bg-gradient-to-r from-orange-500 to-red-500 text-white font-semibold'
+      : 'text-orange-500 font-semibold';
+    
+    const inactiveClass = mobile
+      ? 'text-gray-700 hover:bg-orange-50'
+      : 'text-gray-700 hover:text-orange-500';
+
+    return (
+      <button 
+        onClick={() => { onNavigate(page); setMobileMenuOpen(false); }} 
+        className={`${baseClass} ${isActive ? activeClass : inactiveClass}`}
+      >
+        {children}
+        {!mobile && isActive && (
+          <span className="absolute -bottom-1 left-0 right-0 h-0.5 bg-gradient-to-r from-orange-500 to-red-500 rounded-full" />
+        )}
+      </button>
+    );
+  };
+
   return (
-    <nav className="bg-white shadow-md sticky top-0 z-40">
+    <nav className="bg-white shadow-lg sticky top-0 z-50 backdrop-blur-md bg-opacity-95">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
-          <div className="flex items-center gap-2 cursor-pointer" onClick={() => onNavigate('home')}>
-            <ChefHat className="text-orange-500" size={32} />
-            <span className="text-2xl font-bold text-gray-800">Tasty<span className="text-orange-500">Recipes</span></span>
+          {/* Logo */}
+          <div 
+            className="flex items-center gap-2 cursor-pointer group" 
+            onClick={() => onNavigate('home')}
+          >
+            <div className="bg-gradient-to-br from-orange-500 to-red-500 p-2 rounded-xl group-hover:scale-110 transition-transform duration-300">
+              <ChefHat className="text-white" size={28} />
+            </div>
+            <span className="text-2xl font-bold">
+              <span className="text-gray-800">Tasty</span>
+              <span className="bg-gradient-to-r from-orange-500 to-red-500 bg-clip-text text-transparent">Recipes</span>
+            </span>
           </div>
 
           {/* Desktop Menu */}
-          <div className="hidden md:flex items-center gap-6">
-            <button onClick={() => onNavigate('home')} className={`hover:text-orange-500 transition ${currentPage === 'home' ? 'text-orange-500 font-semibold' : 'text-gray-700'}`}>
-              Home
-            </button>
-            <button onClick={() => onNavigate('recipes')} className={`hover:text-orange-500 transition ${currentPage === 'recipes' ? 'text-orange-500 font-semibold' : 'text-gray-700'}`}>
-              Recipes
-            </button>
+          <div className="hidden md:flex items-center gap-8">
+            <NavLink page="home">Home</NavLink>
+            <NavLink page="recipes">Recipes</NavLink>
             
             {user ? (
               <>
-                <button onClick={() => onNavigate('dashboard')} className={`hover:text-orange-500 transition ${currentPage === 'dashboard' ? 'text-orange-500 font-semibold' : 'text-gray-700'}`}>
-                  Dashboard
-                </button>
-                <button onClick={() => onNavigate('my-recipes')} className={`hover:text-orange-500 transition ${currentPage === 'my-recipes' ? 'text-orange-500 font-semibold' : 'text-gray-700'}`}>
-                  My Recipes
-                </button>
-                <button onClick={() => onNavigate('profile')} className={`hover:text-orange-500 transition ${currentPage === 'profile' ? 'text-orange-500 font-semibold' : 'text-gray-700'}`}>
-                  Profile
-                </button>
-                <Button variant="primary" onClick={() => onNavigate('create-recipe')} className="flex items-center gap-2">
-                  <Plus size={20} />
-                  Add Recipe
-                </Button>
-                <button onClick={handleLogout} className="text-red-500 hover:text-red-600 transition flex items-center gap-2">
-                  <LogOut size={20} />
-                  Logout
-                </button>
+                <NavLink page="dashboard">Dashboard</NavLink>
+                <NavLink page="my-recipes">My Recipes</NavLink>
+                
+                {/* User Menu */}
+                <div className="flex items-center gap-3">
+                  <Button 
+                    variant="primary" 
+                    onClick={() => onNavigate('create-recipe')} 
+                    className="flex items-center gap-2 px-4 py-2"
+                  >
+                    <Plus size={20} />
+                    Add Recipe
+                  </Button>
+                  
+                  <button
+                    onClick={() => onNavigate('profile')}
+                    className="flex items-center gap-2 px-4 py-2 rounded-xl bg-gray-100 hover:bg-gray-200 transition-all duration-200 transform hover:scale-105"
+                  >
+                    <UserIcon size={20} className="text-gray-700" />
+                    <span className="font-medium text-gray-700">{user.name}</span>
+                  </button>
+                  
+                  <button 
+                    onClick={handleLogout} 
+                    className="text-red-500 hover:text-red-600 transition-colors duration-200 p-2 hover:bg-red-50 rounded-lg"
+                    title="Logout"
+                  >
+                    <LogOut size={20} />
+                  </button>
+                </div>
               </>
             ) : (
-              <>
-                <Button variant="outline" onClick={() => onNavigate('login')}>
+              <div className="flex items-center gap-3">
+                <Button variant="outline" onClick={() => onNavigate('login')} className="px-6">
                   Login
                 </Button>
-                <Button variant="primary" onClick={() => onNavigate('register')}>
+                <Button variant="primary" onClick={() => onNavigate('register')} className="px-6">
                   Register
                 </Button>
-              </>
+              </div>
             )}
           </div>
 
           {/* Mobile Menu Button */}
           <button
-            className="md:hidden text-gray-700"
+            className="md:hidden text-gray-700 hover:text-orange-500 transition-colors duration-200 p-2"
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
           >
             {mobileMenuOpen ? <X size={28} /> : <Menu size={28} />}
@@ -74,39 +119,48 @@ const Navbar = ({ currentPage, onNavigate }) => {
 
         {/* Mobile Menu */}
         {mobileMenuOpen && (
-          <div className="md:hidden py-4 border-t">
-            <div className="flex flex-col gap-4">
-              <button onClick={() => { onNavigate('home'); setMobileMenuOpen(false); }} className="text-left text-gray-700 hover:text-orange-500">
-                Home
-              </button>
-              <button onClick={() => { onNavigate('recipes'); setMobileMenuOpen(false); }} className="text-left text-gray-700 hover:text-orange-500">
-                Recipes
-              </button>
+          <div className="md:hidden py-4 border-t animate-fade-in">
+            <div className="flex flex-col gap-2">
+              <NavLink page="home" mobile>Home</NavLink>
+              <NavLink page="recipes" mobile>Recipes</NavLink>
               
               {user ? (
                 <>
-                  <button onClick={() => { onNavigate('dashboard'); setMobileMenuOpen(false); }} className="text-left text-gray-700 hover:text-orange-500">
-                    Dashboard
-                  </button>
-                  <button onClick={() => { onNavigate('my-recipes'); setMobileMenuOpen(false); }} className="text-left text-gray-700 hover:text-orange-500">
-                    My Recipes
-                  </button>
-                  <button onClick={() => { onNavigate('profile'); setMobileMenuOpen(false); }} className="text-left text-gray-700 hover:text-orange-500">
-                    Profile
-                  </button>
-                  <Button variant="primary" onClick={() => { onNavigate('create-recipe'); setMobileMenuOpen(false); }} className="w-full">
+                  <NavLink page="dashboard" mobile>Dashboard</NavLink>
+                  <NavLink page="my-recipes" mobile>My Recipes</NavLink>
+                  <NavLink page="profile" mobile>Profile</NavLink>
+                  
+                  <Button 
+                    variant="primary" 
+                    onClick={() => { onNavigate('create-recipe'); setMobileMenuOpen(false); }} 
+                    className="w-full mt-2"
+                  >
+                    <Plus size={20} className="inline mr-2" />
                     Add Recipe
                   </Button>
-                  <button onClick={handleLogout} className="text-left text-red-500 hover:text-red-600">
+                  
+                  <button 
+                    onClick={handleLogout} 
+                    className="text-left text-red-500 hover:text-red-600 py-3 px-4 rounded-lg hover:bg-red-50 transition-all duration-200 mt-2"
+                  >
+                    <LogOut size={20} className="inline mr-2" />
                     Logout
                   </button>
                 </>
               ) : (
                 <>
-                  <Button variant="outline" onClick={() => { onNavigate('login'); setMobileMenuOpen(false); }} className="w-full">
+                  <Button 
+                    variant="outline" 
+                    onClick={() => { onNavigate('login'); setMobileMenuOpen(false); }} 
+                    className="w-full mt-2"
+                  >
                     Login
                   </Button>
-                  <Button variant="primary" onClick={() => { onNavigate('register'); setMobileMenuOpen(false); }} className="w-full">
+                  <Button 
+                    variant="primary" 
+                    onClick={() => { onNavigate('register'); setMobileMenuOpen(false); }} 
+                    className="w-full mt-2"
+                  >
                     Register
                   </Button>
                 </>
