@@ -2,11 +2,23 @@ const API_BASE_URL = 'http://localhost:8080/api';
 
 // Helper function for error handling
 const handleResponse = async (response) => {
+  const contentType = response.headers.get('content-type');
+  
   if (!response.ok) {
-    const error = await response.json().catch(() => ({ message: 'Network error occurred' }));
+    let error;
+    if (contentType && contentType.includes('application/json')) {
+      error = await response.json().catch(() => ({ message: 'Network error occurred' }));
+    } else {
+      error = { message: `HTTP error! status: ${response.status}` };
+    }
     throw new Error(error.message || `HTTP error! status: ${response.status}`);
   }
-  return response.json();
+  
+  if (contentType && contentType.includes('application/json')) {
+    return response.json();
+  }
+  
+  return response;
 };
 
 // Helper function to create headers with auth
@@ -103,7 +115,7 @@ export const api = {
       const response = await fetch(`${API_BASE_URL}/recipes`, {
         method: 'POST',
         headers: { 'Authorization': `Bearer ${token}` },
-        body: formData // Don't set Content-Type for FormData
+        body: formData
       });
       return handleResponse(response);
     } catch (error) {
@@ -117,7 +129,7 @@ export const api = {
       const response = await fetch(`${API_BASE_URL}/recipes/${id}`, {
         method: 'PUT',
         headers: { 'Authorization': `Bearer ${token}` },
-        body: formData // Don't set Content-Type for FormData
+        body: formData
       });
       return handleResponse(response);
     } catch (error) {
@@ -216,12 +228,15 @@ export const api = {
   
   updateProfile: async (data, token) => {
     try {
+      console.log('Updating profile with data:', data);
       const response = await fetch(`${API_BASE_URL}/users/profile`, {
         method: 'PUT',
         headers: createHeaders(token),
         body: JSON.stringify(data)
       });
-      return handleResponse(response);
+      const result = await handleResponse(response);
+      console.log('Profile update response:', result);
+      return result;
     } catch (error) {
       console.error('Update profile error:', error);
       throw error;
@@ -230,12 +245,15 @@ export const api = {
   
   changePassword: async (data, token) => {
     try {
+      console.log('Changing password...');
       const response = await fetch(`${API_BASE_URL}/users/change-password`, {
         method: 'PUT',
         headers: createHeaders(token),
         body: JSON.stringify(data)
       });
-      return handleResponse(response);
+      const result = await handleResponse(response);
+      console.log('Password change response:', result);
+      return result;
     } catch (error) {
       console.error('Change password error:', error);
       throw error;

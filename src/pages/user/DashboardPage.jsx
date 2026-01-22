@@ -17,13 +17,11 @@ const DashboardPage = ({ onNavigate }) => {
 
   const fetchDashboardData = async () => {
     try {
-      const [recipesRes, reviewsRes] = await Promise.all([
+      // FIX: Both API calls already return parsed data
+      const [recipesData, reviewsData] = await Promise.all([
         api.getUserRecipes(token),
         api.getUserReviews(token)
       ]);
-
-      const recipesData = await recipesRes.json();
-      const reviewsData = await reviewsRes.json();
 
       if (recipesData.success) {
         setStats(prev => ({ ...prev, recipes: recipesData.data.length }));

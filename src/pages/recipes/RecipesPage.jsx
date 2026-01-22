@@ -27,8 +27,8 @@ const RecipesPage = ({ onNavigate, searchQuery }) => {
   const fetchRecipes = async () => {
     setLoading(true);
     try {
-      const response = await api.getRecipes(currentPage, 12, sortBy, direction);
-      const data = await response.json();
+      // FIX: api.getRecipes already returns parsed data
+      const data = await api.getRecipes(currentPage, 12, sortBy, direction);
       if (data.success) {
         setRecipes(data.data);
         setTotalPages(10); // Adjust based on your pagination response
@@ -48,8 +48,8 @@ const RecipesPage = ({ onNavigate, searchQuery }) => {
 
     setLoading(true);
     try {
-      const response = await api.searchRecipes(search, currentPage, 12);
-      const data = await response.json();
+      // FIX: api.searchRecipes already returns parsed data
+      const data = await api.searchRecipes(search, currentPage, 12);
       if (data.success) {
         setRecipes(data.data);
       }

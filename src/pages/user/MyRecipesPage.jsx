@@ -19,13 +19,14 @@ const MyRecipesPage = ({ onNavigate }) => {
 
   const fetchMyRecipes = async () => {
     try {
-      const response = await api.getUserRecipes(token);
-      const data = await response.json();
+      // FIX: api.getUserRecipes already returns parsed data
+      const data = await api.getUserRecipes(token);
       if (data.success) {
         setRecipes(data.data);
       }
     } catch (error) {
       console.error('Error fetching recipes:', error);
+      setToast({ message: 'Failed to load recipes', type: 'error' });
     } finally {
       setLoading(false);
     }
@@ -33,8 +34,8 @@ const MyRecipesPage = ({ onNavigate }) => {
 
   const handleDelete = async () => {
     try {
-      const response = await api.deleteRecipe(deleteModal.recipeId, token);
-      const data = await response.json();
+      // FIX: api.deleteRecipe already returns parsed data
+      const data = await api.deleteRecipe(deleteModal.recipeId, token);
 
       if (data.success) {
         setToast({ message: 'Recipe deleted successfully', type: 'success' });
