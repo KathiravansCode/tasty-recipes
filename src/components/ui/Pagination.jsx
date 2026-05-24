@@ -1,5 +1,6 @@
 import React from 'react';
-import Button from './Button';
+import { motion } from 'framer-motion';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
 
 const Pagination = ({ currentPage, totalPages, onPageChange }) => {
   const pages = [];
@@ -17,34 +18,58 @@ const Pagination = ({ currentPage, totalPages, onPageChange }) => {
   }
 
   return (
-    <div className="flex justify-center items-center gap-2 mt-8">
-      <Button
-        variant="secondary"
+    <div className="flex justify-center items-center gap-2 mt-12">
+      <motion.button
+        whileHover={{ scale: 1.1 }}
+        whileTap={{ scale: 0.9 }}
         onClick={() => onPageChange(currentPage - 1)}
         disabled={currentPage === 0}
-        className="px-3 py-1"
+        className={`
+          p-3 rounded-xl font-semibold transition-all duration-300
+          ${currentPage === 0 
+            ? 'glass opacity-50 cursor-not-allowed' 
+            : 'glass hover:bg-white/30'
+          }
+        `}
       >
-        Previous
-      </Button>
+        <ChevronLeft size={20} />
+      </motion.button>
       
-      {pages.map((page) => (
-        <button
-          key={page}
-          onClick={() => onPageChange(page)}
-          className={`px-3 py-1 rounded ${currentPage === page ? 'bg-orange-500 text-white' : 'bg-gray-200 hover:bg-gray-300'}`}
-        >
-          {page + 1}
-        </button>
-      ))}
+      <div className="flex gap-2">
+        {pages.map((page) => (
+          <motion.button
+            key={page}
+            whileHover={{ scale: 1.1, y: -2 }}
+            whileTap={{ scale: 0.95 }}
+            onClick={() => onPageChange(page)}
+            className={`
+              w-12 h-12 rounded-xl font-semibold transition-all duration-300
+              ${currentPage === page 
+                ? 'bg-gradient-to-r from-purple-600 to-pink-600 text-white shadow-lg' 
+                : 'glass hover:bg-white/30'
+              }
+            `}
+          >
+            {page + 1}
+          </motion.button>
+        ))}
+      </div>
       
-      <Button
-        variant="secondary"
+      <motion.button
+        whileHover={{ scale: 1.1 }}
+        whileTap={{ scale: 0.9 }}
         onClick={() => onPageChange(currentPage + 1)}
         disabled={currentPage >= totalPages - 1}
-        className="px-3 py-1"
+        className={`
+          p-3 rounded-xl font-semibold transition-all duration-300
+          ${currentPage >= totalPages - 1
+            ? 'glass opacity-50 cursor-not-allowed' 
+            : 'glass hover:bg-white/30'
+          }
+        `}
       >
-        Next
-      </Button>
+        <ChevronRight size={20} />
+      </motion.button>
     </div>
   );
 };

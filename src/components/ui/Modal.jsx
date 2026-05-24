@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { X } from 'lucide-react';
 
 const Modal = ({ isOpen, onClose, title, children, size = 'md' }) => {
@@ -14,8 +15,6 @@ const Modal = ({ isOpen, onClose, title, children, size = 'md' }) => {
     };
   }, [isOpen]);
 
-  if (!isOpen) return null;
-
   const sizes = {
     sm: 'max-w-md',
     md: 'max-w-lg',
@@ -24,32 +23,47 @@ const Modal = ({ isOpen, onClose, title, children, size = 'md' }) => {
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 animate-fade-in">
-      {/* Backdrop */}
-      <div 
-        className="absolute inset-0 bg-black bg-opacity-50 backdrop-blur-sm"
-        onClick={onClose}
-      />
-      
-      {/* Modal */}
-      <div className={`relative bg-white rounded-2xl ${sizes[size]} w-full max-h-[90vh] overflow-y-auto shadow-2xl animate-scale-in`}>
-        {/* Header */}
-        <div className="sticky top-0 bg-gradient-to-r from-orange-500 to-red-500 text-white px-6 py-4 rounded-t-2xl flex justify-between items-center z-10">
-          <h3 className="text-xl font-bold">{title}</h3>
-          <button 
-            onClick={onClose} 
-            className="hover:bg-white hover:bg-opacity-20 rounded-lg p-2 transition-all duration-200 transform hover:scale-110"
+    <AnimatePresence>
+      {isOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+          {/* Backdrop */}
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={onClose}
+            className="absolute inset-0 bg-black/60 backdrop-blur-md"
+          />
+          
+          {/* Modal */}
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9, y: 20 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.9, y: 20 }}
+            transition={{ type: "spring", stiffness: 300, damping: 30 }}
+            className={`relative glass-card ${sizes[size]} w-full max-h-[90vh] overflow-hidden rounded-3xl shadow-2xl`}
           >
-            <X size={24} />
-          </button>
+            {/* Header */}
+            <div className="sticky top-0 bg-gradient-to-r from-purple-600 to-pink-600 text-white px-8 py-6 rounded-t-3xl flex justify-between items-center z-10">
+              <h3 className="text-2xl font-bold">{title}</h3>
+              <motion.button
+                whileHover={{ scale: 1.1, rotate: 90 }}
+                whileTap={{ scale: 0.9 }}
+                onClick={onClose}
+                className="hover:bg-white/20 rounded-xl p-2 transition-all duration-200"
+              >
+                <X size={24} />
+              </motion.button>
+            </div>
+            
+            {/* Content */}
+            <div className="p-8 overflow-y-auto max-h-[calc(90vh-88px)]">
+              {children}
+            </div>
+          </motion.div>
         </div>
-        
-        {/* Content */}
-        <div className="p-6">
-          {children}
-        </div>
-      </div>
-    </div>
+      )}
+    </AnimatePresence>
   );
 };
 

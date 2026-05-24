@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { ChefHat, Mail, Lock } from 'lucide-react';
+import { motion } from 'framer-motion';
+import { ChefHat, Mail, Lock, Sparkles } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import { api } from '../../services/api';
 import Button from '../../components/ui/Button';
@@ -65,24 +66,64 @@ const LoginPage = ({ onNavigate }) => {
   };
 
   return (
-    <div className="min-h-[calc(100vh-64px)] flex items-center justify-center bg-gradient-to-br from-orange-100 via-red-50 to-pink-100 px-4 py-12 relative overflow-hidden">
-      {/* Animated background elements */}
-      <div className="absolute inset-0 opacity-30">
-        <div className="absolute top-20 left-10 w-64 h-64 bg-orange-300 rounded-full blur-3xl animate-float"></div>
-        <div className="absolute bottom-20 right-10 w-96 h-96 bg-red-300 rounded-full blur-3xl animate-float" style={{ animationDelay: '2s' }}></div>
-      </div>
+    <div className="min-h-screen flex items-center justify-center px-4 py-12 relative overflow-hidden">
+      {/* Animated Background */}
+      <motion.div
+        animate={{
+          scale: [1, 1.2, 1],
+          rotate: [0, 90, 0],
+          opacity: [0.3, 0.5, 0.3],
+        }}
+        transition={{ duration: 20, repeat: Infinity }}
+        className="absolute top-0 left-0 w-96 h-96 bg-purple-400/30 rounded-full blur-3xl"
+      />
+      <motion.div
+        animate={{
+          scale: [1, 1.3, 1],
+          rotate: [0, -90, 0],
+          opacity: [0.2, 0.4, 0.2],
+        }}
+        transition={{ duration: 25, repeat: Infinity }}
+        className="absolute bottom-0 right-0 w-[32rem] h-[32rem] bg-pink-400/30 rounded-full blur-3xl"
+      />
 
       {toast && <Toast message={toast.message} type={toast.type} onClose={() => setToast(null)} />}
       
-      <div className="glass rounded-3xl shadow-2xl p-10 w-full max-w-md relative z-10 animate-scale-in">
+      <motion.div
+        initial={{ opacity: 0, y: 50 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+        className="glass-card rounded-3xl shadow-2xl p-10 w-full max-w-md relative z-10"
+      >
         <div className="text-center mb-8">
-          <div className="bg-gradient-to-br from-orange-500 to-red-500 w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-4 animate-float">
-            <ChefHat className="text-white" size={32} />
-          </div>
-          <h2 className="text-4xl font-bold bg-gradient-to-r from-orange-500 to-red-500 bg-clip-text text-transparent mb-2">
+          <motion.div
+            animate={{ 
+              rotate: [0, 10, -10, 0],
+              y: [0, -10, 0]
+            }}
+            transition={{ duration: 2, repeat: Infinity, repeatDelay: 3 }}
+            className="inline-block mb-4"
+          >
+            <div className="relative">
+              <div className="absolute inset-0 bg-gradient-to-br from-purple-600 to-pink-600 rounded-2xl blur-xl opacity-50" />
+              <div className="relative bg-gradient-to-br from-purple-600 to-pink-600 w-20 h-20 rounded-2xl flex items-center justify-center">
+                <ChefHat className="text-white" size={40} />
+              </div>
+            </div>
+          </motion.div>
+          
+          <motion.div
+            initial={{ scale: 0 }}
+            animate={{ scale: 1 }}
+            transition={{ delay: 0.3, type: "spring" }}
+          >
+            <Sparkles className="inline-block text-yellow-500 mb-2" size={24} />
+          </motion.div>
+          
+          <h2 className="text-4xl font-black gradient-text mb-2">
             Welcome Back!
           </h2>
-          <p className="text-gray-600">Login to access your recipes</p>
+          <p className="text-gray-600">Login to continue your culinary journey</p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-6">
@@ -92,7 +133,7 @@ const LoginPage = ({ onNavigate }) => {
             value={formData.email}
             onChange={(e) => setFormData({ ...formData, email: e.target.value })}
             error={errors.email}
-            placeholder="Enter your email"
+            placeholder="your@email.com"
             icon={<Mail size={20} />}
           />
 
@@ -102,32 +143,51 @@ const LoginPage = ({ onNavigate }) => {
             value={formData.password}
             onChange={(e) => setFormData({ ...formData, password: e.target.value })}
             error={errors.password}
-            placeholder="Enter your password"
+            placeholder="••••••••"
             icon={<Lock size={20} />}
           />
 
-          <Button 
-            type="submit" 
-            variant="primary" 
-            className="w-full" 
-            loading={loading}
+          <motion.div
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
           >
-            Login
-          </Button>
+            <Button 
+              type="submit" 
+              variant="primary" 
+              className="w-full py-4 text-lg" 
+              loading={loading}
+            >
+              {loading ? 'Logging in...' : 'Login'}
+            </Button>
+          </motion.div>
         </form>
 
-        <div className="mt-6 text-center">
+        <div className="mt-8 text-center">
           <p className="text-gray-600">
             Don't have an account?{' '}
-            <button 
-              onClick={() => onNavigate('register')} 
-              className="text-orange-500 hover:text-orange-600 font-semibold hover:underline transition-all duration-200"
+            <motion.button
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              onClick={() => onNavigate('register')}
+              className="gradient-text font-bold hover:underline"
             >
-              Register here
-            </button>
+              Register here →
+            </motion.button>
           </p>
         </div>
-      </div>
+
+        {/* Decorative Elements */}
+        <motion.div
+          animate={{ rotate: 360 }}
+          transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
+          className="absolute -top-10 -right-10 w-20 h-20 border-4 border-purple-200 rounded-full opacity-20"
+        />
+        <motion.div
+          animate={{ rotate: -360 }}
+          transition={{ duration: 15, repeat: Infinity, ease: "linear" }}
+          className="absolute -bottom-10 -left-10 w-32 h-32 border-4 border-pink-200 rounded-full opacity-20"
+        />
+      </motion.div>
     </div>
   );
 };

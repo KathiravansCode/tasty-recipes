@@ -1,31 +1,51 @@
 import React from 'react';
+import { motion } from 'framer-motion';
 
 const Input = ({ label, error, className = '', icon, ...props }) => (
-  <div className="mb-4 animate-fade-in">
+  <motion.div
+    initial={{ opacity: 0, y: 20 }}
+    animate={{ opacity: 1, y: 0 }}
+    className="mb-6"
+  >
     {label && (
-      <label className="block text-gray-700 font-medium mb-2 text-sm">
+      <label className="block text-gray-700 font-semibold mb-3 text-sm tracking-wide">
         {label}
       </label>
     )}
-    <div className="relative">
+    <div className="relative group">
       {icon && (
-        <div className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400">
+        <motion.div
+          whileHover={{ scale: 1.1 }}
+          className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 group-focus-within:text-purple-600 transition-colors duration-300"
+        >
           {icon}
-        </div>
+        </motion.div>
       )}
       <input
-        className={`w-full ${icon ? 'pl-10' : ''} px-4 py-3 border rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-transparent outline-none transition-all duration-300 backdrop-blur-sm bg-white bg-opacity-90 hover:bg-opacity-100 ${
-          error ? 'border-red-500 focus:ring-red-500' : 'border-gray-300'
-        } ${className}`}
+        className={`
+          w-full ${icon ? 'pl-12' : ''} px-5 py-4
+          border-2 border-gray-200 rounded-2xl
+          focus:border-purple-600 focus:ring-4 focus:ring-purple-100
+          outline-none transition-all duration-300
+          glass-card hover:border-gray-300
+          text-gray-800 placeholder-gray-400
+          ${error ? 'border-red-500 focus:border-red-500 focus:ring-red-100' : ''}
+          ${className}
+        `}
         {...props}
       />
     </div>
     {error && (
-      <p className="text-red-500 text-sm mt-1 animate-slide-in">
+      <motion.p
+        initial={{ opacity: 0, x: -10 }}
+        animate={{ opacity: 1, x: 0 }}
+        className="text-red-500 text-sm mt-2 flex items-center gap-1"
+      >
+        <span>⚠️</span>
         {error}
-      </p>
+      </motion.p>
     )}
-  </div>
+  </motion.div>
 );
 
 export default Input;

@@ -1,19 +1,27 @@
 import React from 'react';
+import { motion } from 'framer-motion';
 
 const Button = ({ children, variant = 'primary', className = '', loading = false, ...props }) => {
-  const baseClass = 'px-6 py-3 rounded-xl font-medium transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed transform hover:scale-105 active:scale-95 relative overflow-hidden';
-  
   const variants = {
-    primary: 'bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white shadow-lg hover:shadow-xl',
-    secondary: 'bg-white bg-opacity-20 backdrop-blur-md hover:bg-opacity-30 text-gray-800 border border-white border-opacity-30 shadow-md',
-    danger: 'bg-gradient-to-r from-red-500 to-pink-500 hover:from-red-600 hover:to-pink-600 text-white shadow-lg hover:shadow-xl',
-    outline: 'border-2 border-orange-500 text-orange-500 hover:bg-orange-50 backdrop-blur-sm hover:shadow-md',
-    glass: 'bg-white bg-opacity-10 backdrop-blur-md border border-white border-opacity-20 text-white hover:bg-opacity-20 shadow-md'
+    primary: 'bg-gradient-to-r from-purple-600 to-pink-600 text-white shadow-lg hover:shadow-xl hover:from-purple-700 hover:to-pink-700',
+    secondary: 'glass text-gray-800 hover:bg-white/30 border border-white/30',
+    danger: 'bg-gradient-to-r from-red-500 to-pink-600 text-white shadow-lg hover:shadow-xl hover:from-red-600 hover:to-pink-700',
+    outline: 'border-2 border-purple-600 text-purple-600 hover:bg-purple-50',
+    ghost: 'text-purple-600 hover:bg-purple-50'
   };
 
   return (
-    <button 
-      className={`${baseClass} ${variants[variant]} ${className}`} 
+    <motion.button
+      whileHover={{ scale: 1.02 }}
+      whileTap={{ scale: 0.98 }}
+      className={`
+        px-6 py-3 rounded-xl font-semibold
+        transition-all duration-300
+        disabled:opacity-50 disabled:cursor-not-allowed
+        relative overflow-hidden
+        ${variants[variant]}
+        ${className}
+      `}
       disabled={loading || props.disabled}
       {...props}
     >
@@ -26,7 +34,14 @@ const Button = ({ children, variant = 'primary', className = '', loading = false
           Loading...
         </span>
       ) : children}
-    </button>
+      
+      {/* Shine effect */}
+      {!loading && variant === 'primary' && (
+        <span className="absolute inset-0 -z-10">
+          <span className="absolute inset-0 animate-shimmer bg-gradient-to-r from-transparent via-white/20 to-transparent" />
+        </span>
+      )}
+    </motion.button>
   );
 };
 
