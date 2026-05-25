@@ -28,7 +28,7 @@ const RecipeCard = ({ recipe, onNavigate }) => {
         
         {recipe.imageUrl && !imageError ? (
           <motion.img
-            src={`http://localhost:8080/${recipe.imageUrl}`}
+            src={`${recipe.imageUrl}`}
             alt={recipe.title}
             className={`w-full h-full object-cover transition-all duration-500 ${
               imageLoaded ? 'opacity-100 scale-100' : 'opacity-0 scale-110'
