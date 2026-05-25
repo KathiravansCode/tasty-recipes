@@ -51,7 +51,11 @@ const CreateRecipePage = ({ onNavigate, editRecipeId = null }) => {
           steps: recipe.steps
         });
         if (recipe.imageUrl) {
-          setImagePreview(`http://localhost:8080/${recipe.imageUrl}`);
+          // Only prepend localhost if it's a relative path
+          const imageUrl = recipe.imageUrl.startsWith('http') 
+            ? recipe.imageUrl 
+            : `${recipe.imageUrl}`;
+          setImagePreview(imageUrl);
         }
       }
     } catch (error) {

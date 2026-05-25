@@ -74,7 +74,7 @@ const MyRecipesPage = ({ onNavigate }) => {
             <div key={recipe.id} className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-shadow">
               <div className="relative h-48 bg-gray-200 cursor-pointer" onClick={() => onNavigate('recipe-detail', recipe.id)}>
                 {recipe.imageUrl ? (
-                  <img src={`http://localhost:8080/${recipe.imageUrl}`} alt={recipe.title} className="w-full h-full object-cover" />
+                  <img src={recipe.imageUrl.startsWith('http') ? recipe.imageUrl : `${recipe.imageUrl}`} alt={recipe.title} className="w-full h-full object-cover" />
                 ) : (
                   <div className="w-full h-full flex items-center justify-center">
                     <ChefHat size={64} className="text-gray-400" />

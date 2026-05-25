@@ -124,7 +124,7 @@ const RecipeDetailPage = ({ recipeId, onNavigate }) => {
         <div className="relative h-96 bg-gradient-to-br from-orange-100 to-red-100 rounded-2xl overflow-hidden mb-8 shadow-xl animate-fade-in">
           {recipe.imageUrl && !imageError ? (
             <img 
-              src={`http://localhost:8080/${recipe.imageUrl}`} 
+              src={recipe.imageUrl.startsWith('http') ? recipe.imageUrl : `${recipe.imageUrl}`} 
               alt={recipe.title}
               className="w-full h-full object-cover"
               onError={() => setImageError(true)}
@@ -270,3 +270,4 @@ const RecipeDetailPage = ({ recipeId, onNavigate }) => {
 };
 
 export default RecipeDetailPage;
+
